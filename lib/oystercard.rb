@@ -1,12 +1,16 @@
-class OysterCard
+class Oystercard
 
-attr_reader :balance
+  MAXIMUM_BALANCE = 90
 
-  def initialize(balance = 0)
-    @balance = balance
+  attr_reader :balance
+
+  def initialize
+    @balance = 0
   end
-  def top_up(balance)
-    @balance += balance
+
+  def top_up(amount)
+    fail "Maximum balance of #{MAXIMUM_BALANCE} reached, you posho!" if amount + balance > MAXIMUM_BALANCE
+    @balance += amount
   end
 
 end
