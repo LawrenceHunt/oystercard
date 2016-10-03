@@ -26,11 +26,21 @@ subject(:oystercard) {described_class.new}
       describe '#deduct' do
         it 'deducts an amount' do
           subject.top_up 60
-          subject.deduct 30
-          expect(subject.balance).to eq 30
+          expect{subject.deduct 30}.to change{subject.balance}.by -30
         end
       end
 
+         it 'passenger starts not in journey' do
+         expect(subject).not_to be_in_journey
+       end
+          it 'passenger can touch in' do
+            subject.touch_in
+          expect(subject).to be_in_journey
+        end
 
-
+        it 'passenger can touch out' do
+          subject.touch_in
+          subject.touch_out
+          expect(subject).not_to be_in_journey
+        end
 end
