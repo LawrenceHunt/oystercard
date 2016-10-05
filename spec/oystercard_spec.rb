@@ -17,7 +17,7 @@ describe '#touch_in' do
     subject.top_up(10)
     subject.touch_in(entry_station)
     subject.touch_out(exit_station)
-    expect(subject.list_of_journeys).to eq [journey1, journey2]
+    expect(subject.list_of_journeys).to eq [journey]
   end
 
   it 'fines if touch in twice' do
@@ -35,10 +35,10 @@ describe '#touch_out' do
 
   before :each do
     subject.top_up(5)
-    subject.touch_in(station)
   end
 
   it 'deducts correct fare' do
+    subject.touch_in(station)
     expect { subject.touch_out(station) }.to change { subject.balance }.by (-Oystercard::MINIMUM_BALANCE)
   end
 

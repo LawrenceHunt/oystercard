@@ -54,7 +54,7 @@ private
     if touch_in_twice
       @list_of_journeys << {name: station, exit_station: "Unknown"}
       "Double touch-out, motherfucker! £#{PENALTY_FARE} for you!"
-    elsif touch_in_twice
+    elsif touch_out_twice
       @list_of_journeys << {name: "Unknown", exit_station: station}
       "Double touch-in, motherfucker! £#{PENALTY_FARE} for you!"
     end
