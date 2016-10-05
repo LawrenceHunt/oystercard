@@ -1,59 +1,72 @@
-require_relative 'station'
-require_relative 'journey'
-
 class Oystercard
 
-  TOP_UP_LIMIT = 90
+  MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
+  PENALTY_FARE = 6
 
-  attr_reader :balance, :list_journeys, :current_journey
-
-  def initialize(balance = 0)
-    @balance = balance
-    @list_journeys = []
-    @current_journey = nil
+attr_reader :balance, :list_of_journeys
+  def initialize
+    @balance = 0
+    @list_of_journeys = []
   end
 
-  def top_up money
-    fail "Top-up limit of £#{TOP_UP_LIMIT} exceeded." if over_limit?(money)
-    @balance += money
-    "Your new balance is £#{balance}"
-  end
-
-  def touch_in(station)
-    fail "Card empty - #{MINIMUM_BALANCE} required" if empty?
-    if @current_journey
-       @current_journey.end_journey()
-       record_journey
-       @current_journey = Journey.new(station)
-    else @current_journey = Journey.new(station)
+  def top_up(amount)
+    if amount + balance > MAXIMUM_BALANCE
+      fail "Maximum balance of #{MAXIMUM_BALANCE} exceeded"
+      @balance = MAXIMUM_BALANCE
+    else @balance += amount
     end
   end
 
+  def touch_in(station)
+    fail 'Insufficient funds for jouney' if @balance < MINIMUM_BALANCE
+    fine(nil) if touch_in_twice
+    start_journey(station)
+  end
+
   def touch_out(station)
-    @current_journey = current_journey || Journey.new("Unknown")
-    @current_journey.end_journey(station)
-    deduct @current_journey.fare
-    record_journey
-    @current_journey = nil
+    if touch_out_twice
+      fine(station)
+    else
+      deduct(MINIMUM_BALANCE)
+      end_journey(station)
+    end
   end
 
 private
 
-  def deduct money
-    @balance -= money
+  def deduct(amount)
+    @balance -= amount
   end
 
-  def empty?
-    balance < MINIMUM_BALANCE
+  def start_journey(station)
+    @current_journey = Journey.new(station)
   end
 
-  def over_limit? money
-    balance + money > TOP_UP_LIMIT
+  def end_journey(station)
+    @current_journey.finish_journey(station)
+    @list_of_journeys << @current_journey.stations
+    @current_journey = nil
   end
 
-  def record_journey
-    @list_journeys << @current_journey.stations
+  def fine(station)
+      @balance -= PENALTY_FARE
+    if touch_in_twice
+      @list_of_journeys << {name: station, exit_station: "Unknown"}
+      "Double touch-out, motherfucker! £#{PENALTY_FARE} for you!"
+    elsif touch_in_twice
+      @list_of_journeys << {name: "Unknown", exit_station: station}
+      "Double touch-in, motherfucker! £#{PENALTY_FARE} for you!"
+    end
   end
+
+  def touch_out_twice
+    !@current_journey
+  end
+
+  def touch_in_twice
+    !!@current_journey
+  end
+
 
 end

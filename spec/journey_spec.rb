@@ -1,49 +1,26 @@
 require 'journey'
+require 'station'
+require 'oystercard'
 
 describe Journey do
 
-  let(:subject) { described_class.new(station) }
-  let(:station) { double(:station, name: 'Old Street', zone: 1) }
-  let(:exit_station) { double :station, name: 'Kentish Town', zone: 2}
+  let(:entry_station) {Station.new(name: "Mayfair", zone: "Zone 1")}
+  let(:exit_station) {Station.new(name: "Kings Cross", zone: "Zone 2")}
+  subject { described_class.new(entry_station) }
 
-    describe '#initialize' do
-      it 'receives an entry station' do
-      expect(subject.entry_station).to eq station
+  it "should start a journey" do
+    expect(subject).to be_in_journey
+  end
+
+  it "should end a journey" do
+    subject.finish_journey(exit_station)
+    expect(subject).not_to be_in_journey
+  end
+
+  describe "#calculate_fare" do
+    it "calculates the fare" do
+      subject.finish_journey(exit_station)
+      expect(subject.calculate_fare).to eq Journey::MINIMUM_FARE
     end
-    end
-
-    describe '#end_journey' do
-      it 'receives an exit station' do
-        subject.end_journey(exit_station)
-        expect(subject.exit_station).to eq exit_station
-      end
-    end
-
-    describe '#complete?' do
-
-        it 'knows journey is complete' do
-          subject.end_journey(exit_station)
-          expect(subject.complete?).to eq true
-        end
-        it 'knows journey is incomplete' do
-          expect(subject.complete?).to eq false
-      end
-
-    end
-
-    describe '#fare' do
-
-      it 'defaults to a penalty fare' do
-        penalty_fare = Journey::PENALTY_FARE
-        expect(subject.fare).to eq penalty_fare
-      end
-
-      it 'changes to minimum fare if journey completed' do
-        subject.end_journey(exit_station)
-        expect(subject.fare).to eq Journey::MIN_FARE
-      end
-
-    end
-
-
+  end
 end
