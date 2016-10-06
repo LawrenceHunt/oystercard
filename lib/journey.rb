@@ -7,6 +7,7 @@ attr_reader :entry_station, :exit_station
   def initialize(entry_station)
     @in_journey =  true
     @entry_station = entry_station
+    @dont_stop_believing = true
   end
 
   def in_journey?
