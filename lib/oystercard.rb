@@ -57,10 +57,10 @@ private
       @balance -= PENALTY_FARE
     if touch_in_twice
       @list_of_journeys << {name: station, exit_station: "Unknown"}
-      fail "Double touch-out! £#{PENALTY_FARE} for you!"
+      puts "Double touch-out! £#{PENALTY_FARE} for you!"
     elsif touch_out_twice
       @list_of_journeys << {name: "Unknown", exit_station: station}
-      fail "Double touch-in! £#{PENALTY_FARE} for you!"
+      puts "Double touch-in! £#{PENALTY_FARE} for you!"
     end
   end
 
