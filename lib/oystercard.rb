@@ -1,3 +1,7 @@
+require_relative 'station'
+require_relative 'journey'
+
+
 class Oystercard
 
   MAXIMUM_BALANCE = 90
@@ -53,10 +57,10 @@ private
       @balance -= PENALTY_FARE
     if touch_in_twice
       @list_of_journeys << {name: station, exit_station: "Unknown"}
-      "Double touch-out, motherfucker! £#{PENALTY_FARE} for you!"
+      fail "Double touch-out! £#{PENALTY_FARE} for you!"
     elsif touch_out_twice
       @list_of_journeys << {name: "Unknown", exit_station: station}
-      "Double touch-in, motherfucker! £#{PENALTY_FARE} for you!"
+      fail "Double touch-in! £#{PENALTY_FARE} for you!"
     end
   end
 
