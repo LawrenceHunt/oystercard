@@ -2,6 +2,8 @@ class Journey
 
   MINIMUM_FARE = 1
 
+attr_reader :entry_station, :exit_station
+
   def initialize(entry_station)
     @in_journey =  true
     @entry_station = entry_station
@@ -21,7 +23,7 @@ class Journey
   end
 
   def stations
-    {entry_station: @entry_station, exit_station: @exit_station}
+    {entry_station: entry_station, exit_station: exit_station}
   end
 
 end

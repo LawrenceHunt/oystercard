@@ -4,7 +4,7 @@ class Oystercard
   MINIMUM_BALANCE = 1
   PENALTY_FARE = 6
 
-attr_reader :balance, :list_of_journeys
+attr_reader :balance, :list_of_journeys, :current_journey
   def initialize
     @balance = 0
     @list_of_journeys = []
@@ -28,7 +28,7 @@ attr_reader :balance, :list_of_journeys
     if touch_out_twice
       fine(station)
     else
-      deduct(MINIMUM_BALANCE)
+      deduct(current_journey.calculate_fare)
       end_journey(station)
     end
   end
